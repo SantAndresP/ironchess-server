@@ -15,10 +15,11 @@ const { isLoggedIn } = require("../helpers/auth-helper");
 // Signup.
 router.post("/signup", (req, res) => {
   const { username, email, password } = req.body;
+  console.log(username, email, password);
 
   if (!username || !email || !password) {
     res.status(500).json({
-      errorMessage: "Please enter username, email and password",
+      errorMessage: "Please enter username, email and password.",
     });
     return;
   }
