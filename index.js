@@ -70,14 +70,14 @@ io = socket(server);
 io.on("connection", (socket) => {
   console.log(socket.id);
 
-  socket.on("join_room", (data) => {
+  socket.on("join_game", (data) => {
     socket.join(data);
-    console.log("User Joined Room: " + data);
+    console.log("User joined Game: " + data);
   });
 
-  socket.on("send_message", (data) => {
+  socket.on("send_game_info", (data) => {
     console.log(data);
-    socket.to(data.room).emit("receive_message", data.content);
+    socket.to(data.room).emit("receive_info", data);
   });
 
   socket.on("disconnect", () => {
