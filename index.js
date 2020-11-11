@@ -87,7 +87,7 @@ io.on("connection", (socket) => {
 
   // Chess game.
   socket.on("join_game", (data) => {
-    socket.join(data);
+    socket.join(data.roomId);
     console.log("see here ", data.roomId);
 
     GameModel.findOne({ roomId: data.roomId }).then((findResult) => {
