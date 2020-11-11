@@ -3,18 +3,18 @@ const { Schema, model } = require("mongoose");
 
 let gameSchema = new Schema(
   {
+    roomId: String,
+
     white: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
 
     black: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
 
     Movetext: {
-      type: Object,
+      type: String,
     },
 
     result: {

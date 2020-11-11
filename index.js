@@ -15,6 +15,10 @@ const MongoStore = require("connect-mongo")(session);
 require("./config/db.config");
 require("dotenv").config();
 
+// Models.
+const UserModel = require("./models/User.model");
+const GameModel = require("./models/Game.model");
+
 app.use(
   session({
     secret: "marshall-attack",
@@ -70,8 +74,37 @@ io = socket(server);
 io.on("connection", (socket) => {
   console.log(socket.id);
 
+  // Chat box.
+  socket.on("join_room", (data) => {
+    socket.join(data);
+    console.log("User Joined Room: " + data);
+  });
+
+  socket.on("send_message", (data) => {
+    console.log(data);
+    socket.to(data.room).emit("receive_message", data.content);
+  });
+
+  // Chess game.
   socket.on("join_game", (data) => {
     socket.join(data);
+    console.log("see here ", data.roomId);
+
+    GameModel.findOne({ roomId: data.roomId }).then((findResult) => {
+      console.log("🚗", findResult);
+      if (!findResult) {
+        GameModel.create({
+          roomId: data.roomId,
+          white: data.loggedUser.username,
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
     console.log("User joined Game: " + data);
   });
 
@@ -81,6 +114,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("USER DISCONNECTED.");
+    console.log("USER DISCONNECTED FROM ROOM.");
   });
 });
