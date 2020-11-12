@@ -17,15 +17,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-
-    games: {
-      type: Schema.Types.ObjectId,
-      ref: "Game",
-    },
-
-    elo: {
-      type: Number,
-    },
   },
   {
     timestamps: true,

@@ -6,14 +6,16 @@ let gameSchema = new Schema(
     roomId: String,
 
     white: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
 
     black: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
 
-    Movetext: {
+    movetext: {
       type: String,
     },
 

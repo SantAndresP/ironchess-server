@@ -58,6 +58,9 @@ app.use("/api", authRoutes);
 const fileUploads = require("./routes/upload.routes");
 app.use("/api", fileUploads);
 
+const mainRoutes = require("./routes/main.routes");
+app.use("/api", mainRoutes);
+
 app.use((req, res, next) => {
   // If no routes match, send them the React HTML.
   res.sendFile(__dirname + "/public/index.html");
@@ -68,7 +71,9 @@ const server = app.listen(process.env.PORT || 5000, "0.0.0.0", () => {
   console.log("Server is running at PORT 5000.");
 });
 
-/*    Socket.IO    */
+/*
+ *    Socket.IO
+ */
 io = socket(server);
 
 io.on("connection", (socket) => {
@@ -77,39 +82,54 @@ io.on("connection", (socket) => {
   // Chat box.
   socket.on("join_room", (data) => {
     socket.join(data);
+
     console.log("User Joined Room: " + data);
   });
 
   socket.on("send_message", (data) => {
-    console.log(data);
+    console.log("Chatbox data!!!!!!", data);
     socket.to(data.room).emit("receive_message", data.content);
   });
 
   // Chess game.
   socket.on("join_game", (data) => {
     socket.join(data.roomId);
-    console.log("see here ", data.roomId);
+    console.log("User joined game:", data);
 
     GameModel.findOne({ roomId: data.roomId }).then((findResult) => {
-      console.log("🚗", findResult);
+      console.log("Find result!!!!!", findResult);
       if (!findResult) {
         GameModel.create({
           roomId: data.roomId,
-          white: data.loggedUser.username,
-        })
+          white: data.white,
+        }).then((res) => {
+          console.log(res);
+        });
+      } else {
+        GameModel.findOneAndUpdate(
+          { roomId: data.roomId },
+          { black: data.black },
+          { new: true }
+        )
           .then((res) => {
-            console.log(res);
+            console.log("findOneAndUpdate Res!", res);
           })
           .catch((err) => {
-            console.log(err);
+            console.log("findOneAndUpdate Catch!", err);
           });
       }
     });
-    console.log("User joined Game: " + data);
   });
 
   socket.on("send_game_info", (data) => {
-    console.log(data);
+    console.log("This is send_game_info", data);
+
+    GameModel.findOneAndUpdate(
+      { roomId: data.room },
+      { $set: { movetext: data.moves } }
+    ).then((res) => {
+      console.log(res);
+    });
     socket.to(data.room).emit("receive_info", data);
   });
 
