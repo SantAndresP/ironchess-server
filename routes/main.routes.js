@@ -5,6 +5,7 @@ const router = express.Router();
 const GameModel = require("../models/Game.model");
 
 const { isLoggedIn } = require("../helpers/auth-helper");
+const UserModel = require("../models/User.model");
 
 /*    Routes.    */
 router.get("/games", isLoggedIn, (req, res) => {
@@ -28,6 +29,17 @@ router.get("/games", isLoggedIn, (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+});
+
+router.patch("/edit", isLoggedIn, (req, res) => {
+  const userId = req.session.loggedInUser._id;
+  const { about, image } = req.body;
+
+  UserModel.findByIdAndUpdate(userId, { about: about, image: image }).then(
+    (update) => {
+      res.status(200).json(update);
+    }
+  );
 });
 
 module.exports = router;

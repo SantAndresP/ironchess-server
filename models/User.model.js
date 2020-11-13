@@ -17,6 +17,16 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+
+    image: {
+      type: String,
+      default: "https://semantic-ui.com/images/wireframe/square-image.png",
+    },
+
+    about: {
+      type: String,
+      default: "Tell us something about yourself!",
+    },
   },
   {
     timestamps: true,
