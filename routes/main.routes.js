@@ -12,11 +12,13 @@ router.get("/games", isLoggedIn, (req, res) => {
 
   GameModel.find({ $or: [{ black: userId }, { white: userId }] })
     .populate("white")
+    .populate("black")
     .then((searchResult) => {
       const results = searchResult.map((result) => {
         return {
           roomId: result.roomId,
           white: result.white.username,
+          black: result.black ? result.black.username : null,
           movetext: result.movetext,
         };
       });
