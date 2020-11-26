@@ -1,13 +1,13 @@
 /*    Main routes.    */
+
+// Setup.
 const express = require("express");
 const router = express.Router();
-
-const GameModel = require("../models/Game.model");
-
 const { isLoggedIn } = require("../helpers/auth-helper");
+const GameModel = require("../models/Game.model");
 const UserModel = require("../models/User.model");
 
-/*    Routes.    */
+// Routes.
 router.get("/games", isLoggedIn, (req, res) => {
   const userId = req.session.loggedInUser._id;
 
